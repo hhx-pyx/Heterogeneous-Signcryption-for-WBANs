@@ -355,27 +355,25 @@ public class MyHsc {
 
         int n = ciphertexts.size();
         Random random = new Random();
-        int[] a = new int[n];
         Element sigma_agg = bp.getZr().newZeroElement().getImmutable();
         Element right_agg = bp.getG1().newZeroElement().getImmutable();
 
+
+        Element[] a = new Element[n]; // 改为 Element 数组
         for (int i = 0; i < n; i++) {
-            a[i] = i+1;
-//            a[i] = bp.getZr().newElement(random.nextInt(1024) + 1).getImmutable();
-        }
-        //打乱顺序
-        for (int i = n - 1; i > 0; i--) {
-            int j = random.nextInt(i + 1); // 生成0~i的随机索引
-            // 交换aInt[i]和aInt[j]
-            int temp = a[i];
-            a[i] = a[j];
-            a[j] = temp;
+            // 生成 80 位随机大整数，范围 (0, 2^80)
+            BigInteger r = new BigInteger(80, random);
+            // 确保 r > 0
+            while (r.signum() == 0) {
+                r = new BigInteger(80, random);
+            }
+            a[i] = bp.getZr().newElement(r).getImmutable();
         }
 
         for (int i = 0; i < n; i++) {
             Ciphertext θ = ciphertexts.get(i);
             SensorKeyPair key = sensorKeys.get(i);
-            sigma_agg = sigma_agg.add(θ.σ.mul(BigInteger.valueOf(a[i]))).getImmutable();
+            sigma_agg = sigma_agg.add(θ.σ.mul(a[i])).getImmutable();
 //            sigma_agg = sigma_agg.add(θ.σ).getImmutable();
 
             Element h4 = H4(θ.U, θ.C, key.PKs1, θ.t).getImmutable();
@@ -384,7 +382,7 @@ public class MyHsc {
             Element h2_Ppub = P_pub.powZn(h2).getImmutable();      // h2 · Ppub
             Element singleRight = θ.U.add(h4_Xs).add(key.PKs2).add(h2_Ppub).getImmutable();
 
-            right_agg = right_agg.add(singleRight.pow(BigInteger.valueOf(a[i]))).getImmutable();
+            right_agg = right_agg.add(singleRight.powZn(a[i])).getImmutable();
 //            right_agg = right_agg.add(singleRight).getImmutable();
 
         }
