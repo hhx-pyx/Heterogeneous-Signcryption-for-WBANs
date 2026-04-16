@@ -514,8 +514,8 @@ public class LADMCET50 {
 
     // ===================== 多密文相等性测试（自定义数量+耗时统计） =====================
     public static void main(String[] args) {
-        // 自定义参数：密文数量N（可修改为100/300/500...）
-        int N = 1000;
+        // 自定义参数：密文数量N（可修改为2--100/300/500...）
+        int N = 700;
         String testMsg = "ITS-Data: VehicleID=V123, Speed=50km/h, Road=Highway-80, Time=1730000000";
         String userID = "Vehicle-V123";
         // 新增：第二个用户（用于重加密/重解密测试）

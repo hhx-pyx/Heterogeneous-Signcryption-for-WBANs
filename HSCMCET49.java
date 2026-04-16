@@ -469,8 +469,8 @@ public class HSCMCET49 {
 
     // ===================== 全流程测试（含耗时统计） =====================
     public static void main(String[] args) {
-        // 自定义参数：多密文测试数量m（可修改为10/20/50...）
-        int m = 1000;
+        // 自定义参数：多密文测试数量m（可修改为100/300/500/700/1000...）
+        int m = 700;
         String testMsg = "IoV-Data: VehicleID=PKI-V001, Speed=60km/h, Road=Urban-Road-101, Time=1740000000";
         String pkiSenderID = "PKI-Sender-Vehicle";
         String ibcReceiverID = "IBC-Receiver-Vehicle-001";

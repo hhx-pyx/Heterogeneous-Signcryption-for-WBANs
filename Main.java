@@ -6,6 +6,7 @@ import it.unisa.dia.gas.jpbc.PairingParameters;
 import it.unisa.dia.gas.plaf.jpbc.pairing.a.TypeACurveGenerator;
 import java.util.Random;
 
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -103,81 +104,95 @@ public class Main {
         }
         System.out.println("A Map-To-Point Hash Function Operation: " + time/num + " ms");
 
+//        System.out.println("\n========================================");
+//        System.out.println("开始纯 ECC 曲线性能测试（非配对友好曲线）");
+//        System.out.println("========================================");
 
+        JPBC_ECC.main(null);
 
+//        System.out.println("\n========================================");
+//        System.out.println("全部测试完成！");
+//        System.out.println("========================================");
 
-        int rBit = 192;
-        int qBit = 192;
-        TypeACurveGenerator pg = new TypeACurveGenerator(rBit,qBit);
-        PairingParameters pp = pg.generate();
-        Pairing np = PairingFactory.getPairing(pp);
-
-        Field G = np.getG1();
-        Field Zq = np.getZr();
-
-        Element P = G.newRandomElement().getImmutable();
-        Element smP;
-        time = 0;
-        for (int i = 0; i < num; i++) {
-            Element s = Zq.newRandomElement().getImmutable();
-            double start = System.currentTimeMillis();
-            smP = P.mulZn(s).getImmutable();
-            double end = System.currentTimeMillis();
-            time += end - start;
-//            System.out.println("S大小: " + s.toBytes().length );
-
-        }
-//        System.out.println("P大小: " + P.toBytes().length );
-        System.out.println("A ECC-Based Scalar Multiplication Operation: " + time/num + " ms");
-
-        time = 0;
-        Element A;
-        for (int i = 0; i < num; i++) {
-            Element a = Zr.newRandomElement().getImmutable();
-            Element b = Zr.newRandomElement().getImmutable();
-            Element aP = P.mulZn(a);
-            Element bP = P.mulZn(b);
-            double start = System.currentTimeMillis();
-            A = aP.add(bP).getImmutable();
-            double end = System.currentTimeMillis();
-            time += end - start;
-        }
-        System.out.println("A ECC-Based Point Addition Operation: " + time/num + " ms");
-
-        time = 0;
-        Element ssmP;
-        Random random = new Random();
-        for (int i = 0; i < num; i++) {
-            int rn = random.nextInt(2^80);
-            double start = System.currentTimeMillis();
-            ssmP = P.mul(BigInteger.valueOf(rn)).getImmutable();
-            double end = System.currentTimeMillis();
-            time += end - start;
-        }
-        System.out.println("A ECC-Based Small Scalar Multiplication Operation: " + time/num + " ms");
-
-        //hash function
-//        String input2 = "This is my project! Thank you for watching!";
-//        long time1 = 0; // Changed from long time=0;
+//        int rBit = 192;
+//        int qBit = 192;
+//        TypeACurveGenerator pg = new TypeACurveGenerator(rBit,qBit);
+//        PairingParameters pp = pg.generate();
+//        Pairing np = PairingFactory.getPairing(pp);
+//
+//        Field G = np.getG1();
+//        Field Zq = np.getZr();
+//
+//        Element P = G.newRandomElement().getImmutable();
+//        Element smP;
+//        time = 0;
+//
+//        // 1. 先预热（避免JIT编译优化干扰）
+//        for (int i = 0; i < 100; i++) {
+//            Element s = Zq.newRandomElement().getImmutable();
+//            smP = P.mulZn(s).getImmutable();
+//        }
+//
 //        for (int i = 0; i < num; i++) {
-//            long start = System.currentTimeMillis();
-//            String result = getSHA256Hash(input2);
-//            long end = System.currentTimeMillis();
+//            Element s = Zq.newRandomElement().getImmutable();
+//            double start = System.currentTimeMillis();
+//            smP = P.mulZn(s).getImmutable();
+//            double end = System.currentTimeMillis();
+//            time += end - start;
+////            System.out.println("S大小: " + s.toBytes().length );
+//
+//        }
+////        System.out.println("P大小: " + P.toBytes().length );
+//        System.out.println("A ECC-Based Scalar Multiplication Operation: " + time/num + " ms");
+//
+//        time = 0;
+//        Element A;
+//        for (int i = 0; i < num; i++) {
+//            Element a = Zr.newRandomElement().getImmutable();
+//            Element b = Zr.newRandomElement().getImmutable();
+//            Element aP = P.mulZn(a);
+//            Element bP = P.mulZn(b);
+//            double start = System.currentTimeMillis();
+//            A = aP.add(bP).getImmutable();
+//            double end = System.currentTimeMillis();
 //            time += end - start;
 //        }
-//        System.out.println("A Hash Function Operation: " + time/num + " ms");
-        //hash function
-        String input2 = "This is my project! Thank you for watching!";
-        long time1 = 0;
-        for (int i = 0; i < num; i++) {
-            long start = System.nanoTime(); // 使用 nanoTime 获取高精度时间
-            String result = getSHA256Hash(input2);
-            long end = System.nanoTime();
-            time1 += (end - start); // 累加纳秒级时间差
-        }
-        // 将总时间转换为毫秒并计算平均值
-        double avgTime = (double) time1 / num / 1_000_000; // 转换为毫秒
-        System.out.println("A Hash Function Operation: " + String.format("%.3f", avgTime) + " ms");
+//        System.out.println("A ECC-Based Point Addition Operation: " + time/num + " ms");
+//
+//        time = 0;
+//        Element ssmP;
+//        Random random = new Random();
+//        for (int i = 0; i < num; i++) {
+//            int rn = random.nextInt(2^80);
+//            double start = System.currentTimeMillis();
+//            ssmP = P.mul(BigInteger.valueOf(rn)).getImmutable();
+//            double end = System.currentTimeMillis();
+//            time += end - start;
+//        }
+//        System.out.println("A ECC-Based Small Scalar Multiplication Operation: " + time/num + " ms");
+//
+//        //hash function
+////        String input2 = "This is my project! Thank you for watching!";
+////        long time1 = 0; // Changed from long time=0;
+////        for (int i = 0; i < num; i++) {
+////            long start = System.currentTimeMillis();
+////            String result = getSHA256Hash(input2);
+////            long end = System.currentTimeMillis();
+////            time += end - start;
+////        }
+////        System.out.println("A Hash Function Operation: " + time/num + " ms");
+//        //hash function
+//        String input2 = "This is my project! Thank you for watching!";
+//        long time1 = 0;
+//        for (int i = 0; i < num; i++) {
+//            long start = System.nanoTime(); // 使用 nanoTime 获取高精度时间
+//            String result = getSHA256Hash(input2);
+//            long end = System.nanoTime();
+//            time1 += (end - start); // 累加纳秒级时间差
+//        }
+//        // 将总时间转换为毫秒并计算平均值
+//        double avgTime = (double) time1 / num / 1_000_000; // 转换为毫秒
+//        System.out.println("A Hash Function Operation: " + String.format("%.3f", avgTime) + " ms");
 
 
 
